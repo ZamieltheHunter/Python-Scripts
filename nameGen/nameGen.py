@@ -5,6 +5,12 @@ import csv
 from random import randint
 
 speciesMap = {'Drake' : 0, 'Dwarf' : 1, 'Elf' : 2, 'Giant' : 3, 'Goblin' : 4, 'Human' : 5, 'Ogre' : 6, 'Orc' : 7, 'Pech' : 8, 'Rootwalker' : 9, 'Saurian' : 10, 'Unborn' : 11}
+def setGenderBox(value):
+    if (speciesBox.get() in ['Rootwalker', 'Unborn']):
+        genderBox.set('Either/Both/None')
+        genderBox.state(['disabled'])
+    else:
+        genderBox.state(['!disabled'])
 def d20():
     return randint(0,19)
 def makeName():
@@ -13,15 +19,17 @@ def makeName():
     final = ""
     first = 0
     for symbol in equation:
-        if("A" <= symbol < "P"):
+        if("A" <= symbol < "P" or symbol == "X"):
             sym = ord(symbol) - 65
             part = ''
             if(sym < 10):
                 part = nameTable[ord(symbol) - 65][d20()]
             elif(sym == 11 or sym == 12):
+                if(gender == 2):
+                    gender = randint(0,1)
                 part = nameTable[sym][d20()].split("/")[gender];
             elif(symbol == "X"):
-                part = str(d20())
+                part = str(randint(0,10000))
             else:
                 part = nameTable[sym][d20()].split("/")[first]
             
@@ -45,7 +53,6 @@ with open("format.csv", "r") as table:
     reader = csv.reader(table)
     formatTable =[[c for c in r] for r in reader]
 
-#makeName(1, formatTable[species][form])
 
 root = Tk()
 root.title("Fantasy Craft Name Generator")
@@ -61,8 +68,9 @@ speciesBox = ttk.Combobox(mainframe,textvariable=selectedSpecies)
 speciesBox['values'] = ('Drake', 'Dwarf', 'Elf', 'Giant', 'Goblin', 'Human', 'Ogre', 'Orc', 'Pech', 'Rootwalker', 'Saurian', 'Unborn')
 speciesBox.state(['readonly'])
 speciesBox.current(0)
+speciesBox.bind("<<ComboboxSelected>>", setGenderBox)
 genderBox = ttk.Combobox(mainframe,textvariable=selectedGender)
-genderBox['values'] = ('Male','Female')
+genderBox['values'] = ('Male','Female','Either/Both/None')
 genderBox.state(['readonly'])
 genderBox.current(0)
 
