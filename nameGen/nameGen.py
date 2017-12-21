@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import ttk
 import csv
 from random import randint
+import sys
 
 speciesMap = {'Drake' : 0, 'Dwarf' : 1, 'Elf' : 2, 'Giant' : 3, 'Goblin' : 4, 'Human' : 5, 'Ogre' : 6, 'Orc' : 7, 'Pech' : 8, 'Rootwalker' : 9, 'Saurian' : 10, 'Unborn' : 11}
 def setGenderBox(value):
@@ -46,10 +47,17 @@ def makeName():
             first = 1
     nameBox.delete(0,'end')
     nameBox.insert(0,final)
-with open("sorted.csv", "r") as table:
+
+if getattr(sys, 'frozen', False):
+    formatFile = sys._MEIPASS + "/format.csv"
+    nameFile = sys._MEIPASS + "/sorted.csv"
+else:
+    formatFile = "format.csv"
+    nameFile = "sorted.csv"
+with open(nameFile, "r") as table:
     reader = csv.reader(table)
     nameTable = [[c for c in r] for r in reader]
-with open("format.csv", "r") as table:
+with open(formatFile, "r") as table:
     reader = csv.reader(table)
     formatTable =[[c for c in r] for r in reader]
 
