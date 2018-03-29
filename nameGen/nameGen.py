@@ -32,8 +32,7 @@ def save():
         saveFile.write("npcs =" + json.dumps(npcs))
 
 def exitNPCEdit(npc):
-    window = edits[npc]["root"]
-    window.destroy()
+    edits[npc]["root"].destroy()
 
 def saveAndExitEdit(npc):
     npcs[npc]["text"] = edits[npc]["entry"].get(0, END)
@@ -55,8 +54,7 @@ def editNPC():
         npc = listBox.get(entry)
         edits[npc] = {}
         cur = edits[npc]
-        cur["root"] = Tk()
-        cur["root"].title(npc)
+        cur["root"] = Toplevel()
         cur["frame"] = ttk.Frame(cur["root"], padding="3 3 12 12")
         cur["frame"].grid(column=0,row=0, sticky=(N, W, E, S))
         cur["frame"].columnconfigure(0,weight=1)
