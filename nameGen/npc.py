@@ -9,6 +9,8 @@ class NPC():
         self.race = race
         self.text = text
         self.window = None
+        self.frame = None
+        self.entry = None
 
     def saveChanges():
         npcs[self.name]["text"] = self.entry.get(0, END)
@@ -18,13 +20,17 @@ class NPC():
             self.saveChanges()
         self.window.destroy()
         self.window = None
+        self.frame = None
+        self.entry = None
 
     def spawnWindow():
         self.window = Toplevel
         self.window.title(self.name)
-        self.window.grid(column=3, row=3)
+        self.frame = ttk.Frame(column=0, row=0)
+        self.frame.grid(column=3, row=3)
+        self.entry = Text(self.window)
         self.window.protocol("WM_DELETE_WINDOW", self.onClose)
 
     def edit():
         self.spawnWindow()
-
+        self.window
