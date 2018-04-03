@@ -2,14 +2,12 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-import json
-import csv
-import savedNPCs as NPCs
+from npc import *
 from random import randint
+import csv
 import sys
 
-npcs = NPCs.npcs
-edits = {}
+names = list(npcs)
 
 def setGenderBox(value):
     if (speciesBox.get() in ['Rootwalker', 'Unborn', 'Drake']):
@@ -23,47 +21,27 @@ def d20():
 
 def onClose():
     if messagebox.askokcancel("Quit", "Do you wish to exit?"):
-        for window in edits:
-            edits[window]["root"].destroy()
         root.destroy()
 
-def save():
-    with open("savedNPCs.py", "w") as saveFile:
-        saveFile.write("npcs =" + json.dumps(npcs))
-
-def exitNPCEdit(npc):
-    edits[npc]["root"].destroy()
-
-def saveAndExitEdit(npc):
-    npcs[npc]["text"] = edits[npc]["entry"].get(0, END)
-    exitNPCEdit(npc)
-
 def addNPC():
-    npcs[nameBox.get()] = {"text":""}
-    listBox.insert(END, nameBox.get())
+    name = nameBox.get()
+    names.append(name)
+    npcs[name] = NPC(name, {"gender" : genderBox.get(), "species" : speciesBox.get()})
+    listBox.insert(END, name)
 
 def deleteNPC():
-    for npc in listBox.curselection():
-        del npcs[listBox.get(npc)]
+    for name in listBox.curselection():
+        if messagebox.askokcancel("Confirm Delete", "Delete " + listBox.get(name) + "?"):
+            npcs[listBox.get(name)].delete()
+
     listBox.delete(0, END)
     for npc in npcs:
         listBox.insert(END, npc)
 
 def editNPC():
     for entry in listBox.curselection():
-        npc = listBox.get(entry)
-        edits[npc] = {}
-        cur = edits[npc]
-        cur["root"] = Toplevel()
-        cur["frame"] = ttk.Frame(cur["root"], padding="3 3 12 12")
-        cur["frame"].grid(column=0,row=0, sticky=(N, W, E, S))
-        cur["frame"].columnconfigure(0,weight=1)
-        cur["frame"].rowconfigure(0,weight=1)
-        cur["entry"] = Text(cur["frame"])
-        cur["entry"].insert(END, npcs[npc]["text"])
-        ttk.Button(cur["frame"],text="Save & Exit", command= lambda:saveAndExitEdit(npc)).grid(column = 0, row = 0)
-        ttk.Button(cur["frame"],text="Cancel", command= lambda: exitNPCEdit(npc)).grid(column=0, row=1)
-        cur["entry"].grid(column=1, row = 0)
+        name = listBox.get(entry)
+        npcs[name].edit()
 
 def makeName():
     gender = genderBox.current()
@@ -137,8 +115,9 @@ nameBox.grid(column=1,row=2, sticky=E)
 
 listBox = Listbox(root)
 listBox.grid(column=3, row=0)
-for name in npcs.keys():
+for name in names:
     listBox.insert(END, name)
+    npcs[name] = NPC(name, npcs[name])
 
 ttk.Button(mainframe, text="Save", command=save).grid(column=2, row=0)
 ttk.Button(mainframe, text="Add NPC", command=addNPC).grid(column=2, row=1)

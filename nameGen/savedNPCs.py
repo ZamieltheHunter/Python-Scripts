@@ -1,1 +1,0 @@
-npcs ={"Duskarm": {"text": ""}, "Frostclaw": {"text": "Ice Dragon master of evil"}, "Oathbeard": {"text": ""}, "James Oathhorse": {"text": ""}}
