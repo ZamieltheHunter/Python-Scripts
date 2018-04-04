@@ -19,6 +19,8 @@ class NPC(dict):
         self.window = None
         self.frame = None
         self.entry = None
+        self.genderBox = None
+        self.speciesBox = None
 
     def closeWindow(self):
         self.window.destroy()
@@ -28,6 +30,8 @@ class NPC(dict):
 
     def saveChanges(self):
         npcs[self.name]['text'] = self.entry.get(1.0, END)
+        npcs[self.name]['gender'] = self.genderBox.get()
+        npcs[self.name]['species'] = self.speciesBox.get()
 
     def saveAndClose(self):
         self.saveChanges()
@@ -37,12 +41,18 @@ class NPC(dict):
         self.window = Toplevel()
         self.window.title(self.name)
         self.frame = ttk.Frame(self.window, padding="3 3 12 12")
-        self.frame.grid(column=3, row=3)
-        self.entry = Text(self.window)
+        self.frame.grid(column=0, row=0)
+        self.entry = Text(self.window, width=30, height = 6)
         self.entry.insert(END, self['text'])
-        self.entry.grid(column = 0, row = 0)
-        ttk.Button(self.frame, text="Save and Close", command=self.saveAndClose).grid(column = 3, row = 3)
-        ttk.Button(self.frame, text="Cancel Edit", command=self.closeWindow).grid(column = 3, row = 2)
+        self.genderBox = ttk.Combobox(self.frame, values = ['Male', 'Female', 'Either/Both/None'], state = ['readonly'])
+        self.speciesBox = ttk.Combobox(self.frame, values = ['Drake', 'Dwarf', 'Elf', 'Giant', 'Goblin', 'Human', 'Ogre', 'Orc', 'Pech', 'Rootwalker', 'Saurian', 'Unborn'], state=['readonly'])
+        self.speciesBox.grid(column = 0, row = 0)
+        self.genderBox.grid(column = 0, row = 1)
+        self.genderBox.set(self['gender'])
+        self.speciesBox.set(self['species'])
+        ttk.Button(self.frame, text="Save and Close", command=self.saveAndClose).grid(column = 0, row = 2)
+        ttk.Button(self.frame, text="Cancel Edit", command=self.closeWindow).grid(column = 0, row = 3)
+        self.entry.grid(column =2, row = 0)
     
     def delete(self):
         del npcs[self.name]
@@ -55,3 +65,5 @@ class NPC(dict):
         self.window = None
         self.frame = None
         self.entry = None
+        self.genderBox = None
+        self.speciesBox = None
