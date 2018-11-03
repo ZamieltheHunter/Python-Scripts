@@ -7,7 +7,6 @@ from random import randint
 import csv
 import sys
 import copy
-from pprint import pprint
 
 class Application:
     def __init__(self, window, callbacks, title = None):
@@ -43,7 +42,6 @@ class RootWindow(Application):
         self.children = {}
         for name,npc in npcs.items():
             self.listBox.insert("end", name)
-            pprint(npc)
             npcs[name] = NPC(name, npc)
         self.mainwindow.protocol("WM_DELETE_WINDOW", self.onClose)
 
@@ -115,7 +113,6 @@ class RootWindow(Application):
         self.nameBox.insert(0,final)
     def save(self):
         with open("savedNPCs.json", "w") as saveFile:
-            pprint(npcs)
             saveFile.write(json.dumps(npcs))
 
     def onClose(self):
