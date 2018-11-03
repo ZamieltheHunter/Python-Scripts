@@ -1,0 +1,250 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="tk.Toplevel" id="baseWindow">
+    <property name="height">200</property>
+    <property name="resizable">both</property>
+    <property name="takefocus">true</property>
+    <property name="title" translatable="yes">FantasyCraft Name Generator</property>
+    <property name="width">200</property>
+    <child>
+      <object class="tk.Frame" id="topFrame">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="comboFrame">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <rows>
+                <row id="0">
+                  <property name="weight">1</property>
+                </row>
+              </rows>
+              <columns>
+                <column id="0">
+                  <property name="weight">1</property>
+                </column>
+                <column id="1">
+                  <property name="weight">0</property>
+                </column>
+              </columns>
+            </layout>
+            <child>
+              <object class="tk.Label" id="speciesLabel">
+                <property name="text" translatable="yes">Species:</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Combobox" id="speciesBox">
+                <property name="cursor">based_arrow_down</property>
+                <property name="state">readonly</property>
+                <property name="values">Drake Dwarf Elf Giant Goblin Human Ogre Orc Pech Rootwalker Saurian Unborn</property>
+                <bind add="" handler="setGenderBox" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
+                <layout>
+                  <property name="column">1</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">e</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Label" id="genderLabel">
+                <property name="justify">left</property>
+                <property name="text" translatable="yes">Gender:</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Combobox" id="genderBox">
+                <property name="state">readonly</property>
+                <property name="values">Female Male Both/Either/Other/None</property>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="propagate">True</property>
+                  <property name="row">1</property>
+                  <property name="sticky">e</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Label" id="nameLabel">
+                <property name="text" translatable="yes">Name:</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="nameBox">
+                <property name="exportselection">true</property>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="propagate">True</property>
+                  <property name="row">2</property>
+                  <property name="sticky">e</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="listFrame">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+            <child>
+              <object class="tk.Listbox" id="listBox">
+                <property name="font">TkDefaultFont</property>
+                <property name="height">12</property>
+                <property name="relief">flat</property>
+                <property name="takefocus">false</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="padx">10</property>
+                  <property name="propagate">True</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Label" id="listLabel">
+                <property name="font">TkDefaultFont</property>
+                <property name="relief">flat</property>
+                <property name="text" translatable="yes">NPCs:</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Frame" id="buttonFrame">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">1</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="newNameButton">
+            <property name="command">newNameClicked</property>
+            <property name="text" translatable="yes">New Name</property>
+            <property name="width">9</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="padx">2</property>
+              <property name="pady">2</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="addNPCButton">
+            <property name="command">addNPCClicked</property>
+            <property name="text" translatable="yes">Add NPC</property>
+            <property name="width">9</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">2</property>
+              <property name="pady">2</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="editButton">
+            <property name="command">editClicked</property>
+            <property name="text" translatable="yes">Edit</property>
+            <property name="width">9</property>
+            <layout>
+              <property name="column">2</property>
+              <property name="padx">2</property>
+              <property name="pady">2</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="displayButton">
+            <property name="command">displayClicked</property>
+            <property name="text" translatable="yes">Display</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">2</property>
+              <property name="pady">2</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="saveButton">
+            <property name="command">saveClicked</property>
+            <property name="text" translatable="yes">Save</property>
+            <property name="width">9</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">3</property>
+              <property name="pady">3</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="deleteButton">
+            <property name="command">deleteClicked</property>
+            <property name="text" translatable="yes">Delete</property>
+            <property name="width">9</property>
+            <layout>
+              <property name="column">5</property>
+              <property name="padx">2</property>
+              <property name="pady">2</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
