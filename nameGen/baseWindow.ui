@@ -190,25 +190,12 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Button" id="editButton">
-            <property name="command">editClicked</property>
-            <property name="text" translatable="yes">Edit</property>
+          <object class="ttk.Button" id="openButton">
+            <property name="command">openClicked</property>
+            <property name="text" translatable="yes">Open</property>
             <property name="width">9</property>
             <layout>
               <property name="column">2</property>
-              <property name="padx">2</property>
-              <property name="pady">2</property>
-              <property name="propagate">True</property>
-              <property name="row">0</property>
-            </layout>
-          </object>
-        </child>
-        <child>
-          <object class="ttk.Button" id="displayButton">
-            <property name="command">displayClicked</property>
-            <property name="text" translatable="yes">Display</property>
-            <layout>
-              <property name="column">3</property>
               <property name="padx">2</property>
               <property name="pady">2</property>
               <property name="propagate">True</property>

@@ -27,8 +27,7 @@ class RootWindow(Application):
         super().__init__('baseWindow', {
             'saveClicked' : self.save,
             'deleteClicked': self.deleteNPC,
-            'editClicked': self.editNPC,
-            'displayClicked': self.useNPC,
+            'openClicked': self.openNPC,
             'addNPCClicked': self.addNPC,
             'newNameClicked': self.makeName,
             'setGenderBox': self.setGenderBox
@@ -67,15 +66,10 @@ class RootWindow(Application):
         self.listBox.delete(self.dl)
         self.dl = None
 
-    def editNPC(self):
+    def openNPC(self):
         for entry in self.listBox.curselection():
             name = self.listBox.get(entry)
-            self.children[name] = EditWindow(npcs[name])
-            self.children[name].run()
-    def useNPC(self):
-        for entry in self.listBox.curselection():
-            name = self.listBox.get(entry)
-            self.children[name] = DisplayWindow(npcs[name])
+            self.children[name] = NPCWindow(npcs[name])
             self.children[name].run()
 
     def makeName(self):
@@ -125,31 +119,37 @@ class RootWindow(Application):
 
 
 class NPCWindow(Application):
-    def __init__(self, npc, window, callbacks):
-        super().__init__(window, callbacks, npc['name'])
-        self.npc = copy.deepcopy(npc)
-        self.builder.get_object('nameBox').insert("end",self.npc['name'])
-        self.builder.get_object('textBox').insert("end", self.npc['text'])
-        self.builder.get_object('genderBox').set(self.npc['gender'])
-        self.builder.get_object('speciesBox').set(self.npc['species'])
-        for trait,value in self.npc['traits'].items():
-            self.builder.get_object(trait).set(value)
-
-
-class EditWindow(NPCWindow):
     def __init__(self, npc):
-        super().__init__(npc, 'editWindow', {
-                'okayClicked': self.okay,
-                'lockClicked': self.toggleLock,
-                'cancelClicked': self.quit,
-                'nameChanged': self.rename,
-                'attributeChanged': self.updateAttributes
-            })
+        super().__init__("npcWindow",{
+            'okayClicked': self.okay,
+            'toggleEdit': self.toggleEdit,
+            'cancelClicked': self.quit,
+            'nameChanged': self.rename,
+            'attributeChanged': self.updateAttributes,
+            'threatUpdated' : self.updateDisplay
+        }, npc['name'])
+        self.npc = copy.deepcopy(npc)
+        self.threatLabel = self.builder.get_object('threatLabel')
         self.nameBox = self.builder.get_object('nameBox')
+        self.nameBox.insert("end", self.npc['name'])
         self.textBox = self.builder.get_object('textBox')
+        self.textBox.insert("end", self.npc['text'])
         self.genderBox = self.builder.get_object('genderBox')
+        self.genderBox.set(self.npc['gender'])
         self.speciesBox = self.builder.get_object('speciesBox')
-        self.toggleLock()
+        self.speciesBox.set(self.npc['species'])
+        self.toggleButton = self.builder.get_object('toggleButton')
+        self.threatBox = self.builder.get_object('threatBox')
+        self.threatBox.current(0)
+        self.builder.get_object('spaceLabel1').lower()
+        self.builder.get_object('spaceLabel2').lower()
+        for trait in self.npc['traits']:
+            try:
+                self.builder.get_object(trait).grid_remove()
+            except:
+                print("%sEntry not found" % trait)
+        self.updateDisplay()
+        self.toggleEdit()
 
     def okay(self, event = None):
         npcs[self.npc['name']]['gender'] = self.npc['gender']
@@ -158,18 +158,36 @@ class EditWindow(NPCWindow):
         npcs[self.npc['name']]['traits'] = self.npc['traits']
         self.quit()
 
-    def toggleLock(self, event = None):
+    def toggleEdit(self, event = None):
         if self.speciesBox.state() == ("disabled",):
             self.speciesBox['state'] = 'readonly'
             self.genderBox['state'] ='readonly'
             self.nameBox['state'] = 'normal'
-            self.builder.get_object('lockButton')['text'] = "Lock"
+            for trait in self.npc['traits']:
+                try:
+                    self.builder.get_object(trait).grid()
+                    self.builder.get_object("%sEntry" % trait).grid_remove()
+                except:
+                    print("%sEntry not found" % trait)
+            self.threatLabel.lower()
+            self.threatBox.grid_remove()
+            self.toggleButton['text'] = "Display"
+            self.showAttributes()
         else: 
             self.speciesBox['state'] = 'disabled'
             self.genderBox['state'] ='disabled'
             self.nameBox['state'] = 'disabled'
-            self.builder.get_object('lockButton')['text'] = "Unlock"
-
+            for trait in self.npc['traits']:
+                try:
+                    self.builder.get_object("%sEntry" % trait).grid()
+                    self.builder.get_object(trait).grid_remove()
+                except:
+                    print("%sEntry not found" % trait)
+            self.threatLabel.lift()
+            self.threatBox.grid()
+            self.threatBox.current(0)
+            self.toggleButton['text'] = "Edit"
+            self.updateDisplay()
 
     def rename(self, event = None):
         oldName = self.npc['name']
@@ -189,16 +207,24 @@ class EditWindow(NPCWindow):
             self.npc['traits'][trait] = self.builder.get_object(trait).get()
         self.npc['text'] = self.textBox.get("1.0","end").strip()
 
-class DisplayWindow(NPCWindow):
-    def __init__(self, npc):
-        super().__init__(npc, 'displayWindow', {
-                'threatUpdated' : updateDisplay
-            })
-        self.threatBox = self.builder.get_object('threatBox')
-        threatBox.current(0)
-        self.updateDisplay()
     def updateDisplay(self, event = None):
-        pass
+        for trait, value in self.npc['traits'].items():
+            box = self.builder.get_object("%sEntry" % trait)
+            table = int(traitTables[trait])
+            traitValue = int(value) - 1
+            threat = int(self.threatBox.get())
+            box['state'] = "normal"
+            box.delete(0,"end")
+            box.insert("end", "%d" % traitTables['tables'][table][traitValue][threat])
+            box['state'] = "readonly"
+
+    def showAttributes(self):
+        for trait,value in self.npc['traits'].items():
+            box = self.builder.get_object("%s" % trait)
+            box['state'] = 'normal'
+            box.set(value)
+            box['state'] = 'readonly'
+        
 
 class MessageWindow(Application):
     def __init__(self, question, callbackYes, callbackNo, title = "Message Box", labelYes = 'Yes', labelNo = 'No'):
@@ -220,9 +246,6 @@ class MessageWindow(Application):
         if self.callbackNo != None:
             self.callbackNo()
 
-
-
-
 if getattr(sys, 'frozen', False):
     formatFile = sys._MEIPASS + "/format.csv"
     nameFile = sys._MEIPASS + "/sorted.csv"
@@ -236,11 +259,18 @@ with open(formatFile, "r") as table:
     reader = csv.reader(table)
     formatTable =[[c for c in r] for r in reader]
 npcs = {}
+traitTables = {}
 with open("savedNPCs.json") as saveFile:
     try:
         npcs = json.loads(saveFile.read())
     except:
         pass
+with open("traits.json") as saveFile:
+    try:
+        traitTables = json.loads(saveFile.read())
+    except:
+        pass
+
 def d20():
     return randint(0,19)
 
