@@ -129,17 +129,18 @@ class NPCWindow(Application):
             'threatUpdated' : self.updateDisplay
         }, npc['name'])
         self.npc = copy.deepcopy(npc)
-        self.threatLabel = self.builder.get_object('threatLabel')
-        self.nameBox = self.builder.get_object('nameBox')
+        uiList = ['threatLabel', 'nameBox', 'textBox', 'genderBox', 'speciesBox', 'toggleButton',
+                'threatBox', 'reachBox', 'sizeBox', 'speedBox', 'typeBox']
+        for element in uiList:
+            self[element] = self.builder.get_object(element)
         self.nameBox.insert("end", self.npc['name'])
-        self.textBox = self.builder.get_object('textBox')
         self.textBox.insert("end", self.npc['text'])
-        self.genderBox = self.builder.get_object('genderBox')
         self.genderBox.set(self.npc['gender'])
-        self.speciesBox = self.builder.get_object('speciesBox')
         self.speciesBox.set(self.npc['species'])
-        self.toggleButton = self.builder.get_object('toggleButton')
-        self.threatBox = self.builder.get_object('threatBox')
+        self.reachBox.set(self.npc['reach'])
+        self.sizeBox.set(self.npc['size'])
+        self.speedBox.set(self.npc['speed'])
+        self.typeBox.set(self.npc['type'])
         self.threatBox.current(0)
         self.builder.get_object('spaceLabel1').lower()
         self.builder.get_object('spaceLabel2').lower()
@@ -163,12 +164,16 @@ class NPCWindow(Application):
             self.speciesBox['state'] = 'readonly'
             self.genderBox['state'] ='readonly'
             self.nameBox['state'] = 'normal'
+            self.sizeBox['state'] = 'normal'
+            self.speedBox['state'] = 'normal'
             for trait in self.npc['traits']:
                 try:
                     self.builder.get_object(trait).grid()
                     self.builder.get_object("%sEntry" % trait).grid_remove()
                 except:
                     print("%sEntry not found" % trait)
+            for attribute in self.npc['attributes']:
+                self.builder.get_object('%sEntry' % attribute)['state'] = 'normal'
             self.threatLabel.lower()
             self.threatBox.grid_remove()
             self.toggleButton['text'] = "Display"
@@ -183,6 +188,8 @@ class NPCWindow(Application):
                     self.builder.get_object(trait).grid_remove()
                 except:
                     print("%sEntry not found" % trait)
+            for attribute in self.npc['attributes']:
+                self.builder.get_object("%sEntry" % attribute)['state'] = 'readonly'
             self.threatLabel.lift()
             self.threatBox.grid()
             self.threatBox.current(0)
@@ -201,13 +208,25 @@ class NPCWindow(Application):
             self.nameBox.insert("end", oldName)
 
     def updateAttributes(self, event = None):
+        exp = 0
         self.npc['gender'] = self.genderBox.get()
         self.npc['species'] = self.speciesBox.get()
+        self.npc['speed'] = self.speedBox.get()
+        exp += Math.max([0, (int(self.npc['speed']) - 30) / 10])
+        self.npc['size'] = self.sizeBox.get()
+
+        for attribute in self.npc['attributes']:
+            self.npc['attributes'] = self.builder.get_object(attribute).get()
+            exp += Math.max([0, int(self.npc['attributes'][attribute]) - 10])
         for trait in self.npc['traits']:
             self.npc['traits'][trait] = self.builder.get_object(trait).get()
+            exp += int(self.npc['traits'][trait])
         self.npc['text'] = self.textBox.get("1.0","end").strip()
+        self.npc['experience'] = exp
 
     def updateDisplay(self, event = None):
+        mods = {}
+        finTraits = {}
         for trait, value in self.npc['traits'].items():
             box = self.builder.get_object("%sEntry" % trait)
             table = int(traitTables[trait])
@@ -215,14 +234,39 @@ class NPCWindow(Application):
             threat = int(self.threatBox.get())
             box['state'] = "normal"
             box.delete(0,"end")
-            box.insert("end", "%d" % traitTables['tables'][table][traitValue][threat])
+            finTraits[trait] = 0 if traitValue == -1 else int(traitTables['tables'][table][traitValue][threat])
+            box.insert("end", "%d" % finTraits[trait])
             box['state'] = "readonly"
+        for attribute, value in self.npc['attributes'].items():
+            box = self.builder.get_object('%sEntry' % attribute)
+            box['state'] = "normal"
+            box.delete(0, "end")
+            mods[attribute] = (int(value) - 10) / 2
+            box.insert("end", "%d" % mods[attribute])
+            box['state'] = "readonly"
+
+        self.builder.get_object('initMod').text("%d" % finTraits['init'] + mods['dex'])
+        self.builder.get_object('healthSave').text("%d" % finTraits['health'] + mods['con'])
+        self.builder.get_object('melee').text("%d" % finTraits['attack'].text()) + mods['str'])
+        self.builder.get_object('ranged').text("%d" % finTraits['attack'] + mods['dex'])
+        self.builder.get_object('finDefense').text("%d" % finTraits['defense'] + mods['dex'])
+        self.builder.get_object('fortitude').text("%d" % finTraits['resilience'] + mods['con'])
+        self.builder.get_object('reflex').text("%d" % finTraits['resilience'] + mods['dex'])
+        self.builder.get_object('will').text("%d" % finTraits['resilience'] + mods['wis'])
+        self.builder.get_object('speed').text("%dft." % self.npc['speed'])
+        self.builder.get_object('experience').text("%d" % self.npc['experience'])
 
     def showAttributes(self):
         for trait,value in self.npc['traits'].items():
             box = self.builder.get_object("%s" % trait)
             box['state'] = 'normal'
             box.set(value)
+            box['state'] = 'readonly'
+        for attribute,value in self.npc['attributes'].items():
+            box = self.builder.get_object("%s" % trait)
+            box['state'] = 'normal'
+            box.delete(0, "end")
+            box.insert("end", "%d" % self.npc['attributes'][attribute])
             box['state'] = 'readonly'
         
 
