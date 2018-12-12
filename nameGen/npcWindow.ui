@@ -141,6 +141,7 @@
                   <object class="ttk.Combobox" id="speedBox">
                     <property name="values">0 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100</property>
                     <property name="width">8</property>
+                    <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
                     <layout>
                       <property name="column">1</property>
                       <property name="padx">2</property>
@@ -166,6 +167,7 @@
                   <object class="ttk.Combobox" id="sizeBox">
                     <property name="values">T(1x1)S(5x5)M(5x5) L(10x10) L(5x10) H(15x15) H(15x10) H(15x5) </property>
                     <property name="width">8</property>
+                    <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
                     <layout>
                       <property name="column">1</property>
                       <property name="padx">2</property>
@@ -190,6 +192,7 @@
                 <child>
                   <object class="ttk.Combobox" id="reachBox">
                     <property name="width">8</property>
+                    <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
                     <layout>
                       <property name="column">3</property>
                       <property name="padx">2</property>
@@ -214,6 +217,7 @@
                 <child>
                   <object class="ttk.Combobox" id="typeBox">
                     <property name="width">8</property>
+                    <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
                     <layout>
                       <property name="column">3</property>
                       <property name="padx">2</property>
@@ -281,6 +285,7 @@
                       <object class="ttk.Entry" id="strEntry">
                         <property name="state">readonly</property>
                         <property name="width">5</property>
+                        <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
                         <layout>
                           <property name="column">1</property>
                           <property name="padx">3</property>
@@ -306,6 +311,7 @@
                       <object class="ttk.Entry" id="dexEntry">
                         <property name="state">readonly</property>
                         <property name="width">5</property>
+                        <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
                         <layout>
                           <property name="column">1</property>
                           <property name="padx">3</property>
@@ -331,6 +337,7 @@
                       <object class="ttk.Entry" id="conEntry">
                         <property name="state">readonly</property>
                         <property name="width">5</property>
+                        <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
                         <layout>
                           <property name="column">1</property>
                           <property name="padx">3</property>
@@ -356,6 +363,7 @@
                       <object class="ttk.Entry" id="intEntry">
                         <property name="state">readonly</property>
                         <property name="width">5</property>
+                        <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
                         <layout>
                           <property name="column">3</property>
                           <property name="padx">3</property>
@@ -381,6 +389,7 @@
                       <object class="ttk.Entry" id="wisEntry">
                         <property name="state">readonly</property>
                         <property name="width">5</property>
+                        <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
                         <layout>
                           <property name="column">3</property>
                           <property name="padx">3</property>
@@ -406,6 +415,7 @@
                       <object class="ttk.Entry" id="chaEntry">
                         <property name="state">readonly</property>
                         <property name="width">5</property>
+                        <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
                         <layout>
                           <property name="column">3</property>
                           <property name="padx">3</property>
@@ -775,7 +785,7 @@
                   </object>
                 </child>
                 <child>
-                  <object class="tk.Text" id="textBox">
+                  <object class="tk.Text" id="textArea">
                     <property name="blockcursor">false</property>
                     <property name="exportselection">true</property>
                     <property name="height">10</property>

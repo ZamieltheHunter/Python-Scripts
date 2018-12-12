@@ -8,6 +8,8 @@ class NPC(dict):
         self['size'] = data['size'] if 'size' in data else "M (5 x 5)"
         self['speed'] = data['speed'] if 'speed' in data else 30
         self['experience'] = data['experience'] if 'experience' in data else 0
+        self['type'] = data['type'] if 'type' in data else 'Folk'
+        self['reach'] = data['reach'] if 'reach' in data else 1
         self['traits'] = data['traits'] if 'traits' in data else {
             'initiative' : int(data['initiative']) if 'initiative' in data else 1,
             'defense' : int(data['defense']) if 'defense' in data else 1,
