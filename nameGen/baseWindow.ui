@@ -51,7 +51,7 @@
               <object class="ttk.Combobox" id="speciesBox">
                 <property name="cursor">based_arrow_down</property>
                 <property name="state">readonly</property>
-                <property name="values">Drake Dwarf Elf Giant Goblin Human Ogre Orc Pech Rootwalker Saurian Unborn</property>
+                <property name="values">Drake Dwarf Elf Giant Goblin Human Ogre Orc Pech Rootwalker Saurian Unborn Other</property>
                 <bind add="" handler="setGenderBox" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                 <layout>
                   <property name="column">1</property>

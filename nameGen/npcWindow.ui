@@ -50,7 +50,7 @@
                     <property name="state">normal</property>
                     <property name="validate">none</property>
                     <property name="width">13</property>
-                    <bind add="" handler="nameChanged" sequence="&lt;FocusOut&gt;" />
+                    <bind add="" handler="nameChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                     <layout>
                       <property name="column">1</property>
                       <property name="padx">2</property>
@@ -75,9 +75,9 @@
                 <child>
                   <object class="ttk.Combobox" id="speciesBox">
                     <property name="state">readonly</property>
-                    <property name="values">Drake Dwarf Elf Giant Goblin Human Ogre Orc Pech Rootwalker Saurian Unborn</property>
+                    <property name="values">Drake Dwarf Elf Giant Goblin Human Ogre Orc Pech Rootwalker Saurian Unborn Other</property>
                     <property name="width">12</property>
-                    <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
+                    <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                     <layout>
                       <property name="column">1</property>
                       <property name="padx">2</property>
@@ -104,7 +104,7 @@
                     <property name="state">readonly</property>
                     <property name="values">Female Male Both/Either/Other/None</property>
                     <property name="width">12</property>
-                    <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
+                    <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                     <layout>
                       <property name="column">1</property>
                       <property name="padx">2</property>
@@ -141,7 +141,7 @@
                   <object class="ttk.Combobox" id="speedBox">
                     <property name="values">0 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100</property>
                     <property name="width">8</property>
-                    <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
+                    <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                     <layout>
                       <property name="column">1</property>
                       <property name="padx">2</property>
@@ -167,7 +167,7 @@
                   <object class="ttk.Combobox" id="sizeBox">
                     <property name="values">T(1x1)S(5x5)M(5x5) L(10x10) L(5x10) H(15x15) H(15x10) H(15x5) </property>
                     <property name="width">8</property>
-                    <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
+                    <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                     <layout>
                       <property name="column">1</property>
                       <property name="padx">2</property>
@@ -191,8 +191,9 @@
                 </child>
                 <child>
                   <object class="ttk.Combobox" id="reachBox">
+                    <property name="values">1 2 3 4 5</property>
                     <property name="width">8</property>
-                    <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
+                    <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                     <layout>
                       <property name="column">3</property>
                       <property name="padx">2</property>
@@ -216,8 +217,9 @@
                 </child>
                 <child>
                   <object class="ttk.Combobox" id="typeBox">
+                    <property name="values">Animal Beast Construct Elemental Fey Folk Horror Ooze Outsider Plant Spirit Undead</property>
                     <property name="width">8</property>
-                    <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
+                    <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                     <layout>
                       <property name="column">3</property>
                       <property name="padx">2</property>
@@ -764,13 +766,44 @@
               <property name="row">0</property>
             </layout>
             <child>
+              <object class="ttk.Frame" id="attacksFrame">
+                <property name="height">200</property>
+                <property name="width">200</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+                <child>
+                  <object class="ttk.Label" id="attacksTitle">
+                    <property name="text" translatable="yes">Attacks:</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="attacks Space">
+                    <property name="width">30</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">1</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="ttk.Frame" id="notesFrame">
                 <property name="height">200</property>
                 <property name="width">200</property>
                 <layout>
                   <property name="column">0</property>
                   <property name="propagate">True</property>
-                  <property name="row">2</property>
+                  <property name="row">1</property>
                 </layout>
                 <child>
                   <object class="tk.Label" id="textLabel">
@@ -787,8 +820,8 @@
                 <child>
                   <object class="tk.Text" id="textArea">
                     <property name="blockcursor">false</property>
-                    <property name="exportselection">true</property>
-                    <property name="height">10</property>
+                    <property name="exportselection">false</property>
+                    <property name="height">5</property>
                     <property name="insertunfocussed">solid</property>
                     <property name="relief">raised</property>
                     <property name="takefocus">false</property>
@@ -810,13 +843,16 @@
                 <layout>
                   <property name="column">0</property>
                   <property name="propagate">True</property>
-                  <property name="row">3</property>
+                  <property name="row">2</property>
                 </layout>
                 <child>
                   <object class="ttk.Label" id="initModLabel">
+                    <property name="justify">left</property>
                     <property name="text" translatable="yes">Initiative:</property>
+                    <property name="width">9</property>
                     <layout>
                       <property name="column">0</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">0</property>
                     </layout>
@@ -824,9 +860,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="initMod">
+                    <property name="justify">center</property>
+                    <property name="relief">sunken</property>
                     <property name="width">5</property>
                     <layout>
                       <property name="column">1</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">0</property>
                     </layout>
@@ -834,9 +873,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="healthSaveLabel">
+                    <property name="justify">left</property>
                     <property name="text" translatable="yes">Health:</property>
+                    <property name="width">9</property>
                     <layout>
                       <property name="column">0</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">1</property>
                     </layout>
@@ -844,9 +886,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="healthSave">
+                    <property name="justify">center</property>
+                    <property name="relief">sunken</property>
                     <property name="width">5</property>
                     <layout>
                       <property name="column">1</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">1</property>
                     </layout>
@@ -854,9 +899,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="fortitudeLabel">
+                    <property name="justify">left</property>
                     <property name="text" translatable="yes">Fort:</property>
+                    <property name="width">9</property>
                     <layout>
                       <property name="column">0</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">2</property>
                     </layout>
@@ -864,9 +912,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="fortitudeSave">
+                    <property name="justify">center</property>
+                    <property name="relief">sunken</property>
                     <property name="width">5</property>
                     <layout>
                       <property name="column">1</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">2</property>
                     </layout>
@@ -874,9 +925,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="reflexLabel">
+                    <property name="justify">left</property>
                     <property name="text" translatable="yes">Refl:</property>
+                    <property name="width">9</property>
                     <layout>
                       <property name="column">0</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">3</property>
                     </layout>
@@ -884,9 +938,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="reflexSave">
+                    <property name="justify">center</property>
+                    <property name="relief">sunken</property>
                     <property name="width">5</property>
                     <layout>
                       <property name="column">1</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">3</property>
                     </layout>
@@ -894,9 +951,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="willLabel">
+                    <property name="justify">left</property>
                     <property name="text" translatable="yes">Will:</property>
+                    <property name="width">7</property>
                     <layout>
                       <property name="column">0</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">4</property>
                     </layout>
@@ -904,9 +964,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="willSave">
+                    <property name="justify">center</property>
+                    <property name="relief">sunken</property>
                     <property name="width">5</property>
                     <layout>
                       <property name="column">1</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">4</property>
                     </layout>
@@ -915,8 +978,10 @@
                 <child>
                   <object class="ttk.Label" id="meleeLabel">
                     <property name="text" translatable="yes">Melee Attack:</property>
+                    <property name="width">13</property>
                     <layout>
                       <property name="column">3</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">0</property>
                     </layout>
@@ -924,9 +989,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="melee">
+                    <property name="justify">center</property>
+                    <property name="relief">sunken</property>
                     <property name="width">5</property>
                     <layout>
                       <property name="column">4</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">0</property>
                     </layout>
@@ -934,9 +1002,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="rangedLabel">
+                    <property name="justify">left</property>
                     <property name="text" translatable="yes">Ranged Attack:</property>
+                    <property name="width">13</property>
                     <layout>
                       <property name="column">3</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">1</property>
                     </layout>
@@ -944,9 +1015,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="ranged">
+                    <property name="justify">center</property>
+                    <property name="relief">sunken</property>
                     <property name="width">5</property>
                     <layout>
                       <property name="column">4</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">1</property>
                     </layout>
@@ -954,9 +1028,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="finDefenseLabel:">
+                    <property name="justify">left</property>
                     <property name="text" translatable="yes">Defense:</property>
+                    <property name="width">13</property>
                     <layout>
                       <property name="column">3</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">2</property>
                     </layout>
@@ -964,8 +1041,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="finDefense">
+                    <property name="justify">center</property>
+                    <property name="relief">sunken</property>
+                    <property name="width">5</property>
                     <layout>
                       <property name="column">4</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">2</property>
                     </layout>
@@ -973,9 +1054,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="experienceLabel">
+                    <property name="justify">left</property>
                     <property name="text" translatable="yes">Exp:</property>
+                    <property name="width">13</property>
                     <layout>
                       <property name="column">3</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">4</property>
                     </layout>
@@ -983,8 +1067,12 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="experience">
+                    <property name="justify">center</property>
+                    <property name="relief">sunken</property>
+                    <property name="width">5</property>
                     <layout>
                       <property name="column">4</property>
+                      <property name="padx">2</property>
                       <property name="propagate">True</property>
                       <property name="row">4</property>
                     </layout>

@@ -55,5 +55,57 @@
             [ 10, 12, 13, 14, 16, 17, 18, 20, 21, 22, 24, 25, 26, 28, 29, 30, 32, 33, 34, 36],
             [ 11, 12, 14, 15, 17, 18, 20, 21, 23, 24, 26, 27, 29, 30, 32, 33, 35, 36, 38, 39]
         ]
-    ]
+    ],
+    "types" : {
+        "Animal" : {
+            "exp" : 0,
+            "attributeLimits": {
+                "int": 6
+            },
+            "traitLimits" : {
+                "competence": 0
+            }
+        },
+        "Beast" : {
+            "exp" : 0
+        },
+        "Construct" : {
+            "exp" : 5
+        },
+        "Elemental" : {
+            "exp" : 5
+        },
+        "Fey": {
+            "exp" : 0
+        },
+        "Folk": {
+            "exp" : 0
+        },
+        "Horror" : {
+            "exp" : 5
+        },
+        "Ooze" : {
+            "exp" : 5
+        },
+        "Outsider" : {
+            "exp" : 0
+        },
+        "Plant" : {
+            "exp" : 5,
+            "qualities" : {
+                "Aqautic": 1,
+                "Light Sleeper": 0
+            }
+        },
+        "Spirit" : {
+            "exp" : 5
+        },
+        "Undead" : {
+            "exp" : 5,
+            "qualities" : {
+                "Darkvision": 1,
+                "Light Sensitive": 0
+            }
+        }
+    }
 }

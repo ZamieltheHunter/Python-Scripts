@@ -54,7 +54,7 @@ class RootWindow(Application):
 
     def addNPC(self):
         name = self.elements['nameBox'].get()
-        npcs[name] = NPC(name, {"gender" : self.elements['genderBox'].get(), "species" : self.speciesBox.get()})
+        npcs[name] = NPC(name, {"gender" : self.elements['genderBox'].get(), "species" : self.elements['speciesBox'].get()})
         self.elements['listBox'].insert("end", name)
 
     def deleteNPC(self):
@@ -74,36 +74,39 @@ class RootWindow(Application):
             self.children[name].run()
 
     def makeName(self):
-        gender = self.elements['genderBox'].current()
-        equation = formatTable[self.elements['speciesBox'].current()][d20()]
-        final = ""
-        first = 0
-        for symbol in equation:
-            if("A" <= symbol < "P" or symbol == "X"):
-                sym = ord(symbol) - 65
-                part = ''
-                if(sym < 10):
-                    part = nameTable[ord(symbol) - 65][d20()]
-                elif(sym == 11 or sym == 12):
-                    if(gender == 2):
-                        gender = randint(0,1)
-                    part = nameTable[sym][d20()].split("/")[gender];
-                elif(symbol == "X"):
-                    part = str(randint(0,10000))
+        if self.elements['speciesBox'].current() == "Other":
+                final = "Unable to make name for Other"
+        else :
+            gender = self.elements['genderBox'].current()
+            equation = formatTable[self.elements['speciesBox'].current()][d20()]
+            final = ""
+            first = 0
+            for symbol in equation:
+                if("A" <= symbol < "P" or symbol == "X"):
+                    sym = ord(symbol) - 65
+                    part = ''
+                    if(sym < 10):
+                        part = nameTable[ord(symbol) - 65][d20()]
+                    elif(sym == 11 or sym == 12):
+                        if(gender == 2):
+                            gender = randint(0,1)
+                        part = nameTable[sym][d20()].split("/")[gender];
+                    elif(symbol == "X"):
+                        part = str(randint(0,10000))
+                    else:
+                        part = nameTable[sym][d20()].split("/")[first]
+                    
+                    if(first != 0):
+                        final += part.lower()
+                    else :
+                        final += part
                 else:
-                    part = nameTable[sym][d20()].split("/")[first]
-                
-                if(first != 0):
-                    final += part.lower()
-                else :
-                    final += part
-            else:
-                final += symbol
+                    final += symbol
 
-            if(symbol == " "):
-                first = 0
-            else:
-                first = 1
+                if(symbol == " "):
+                    first = 0
+                else:
+                    first = 1
         self.elements['nameBox'].delete(0,'end')
         self.elements['nameBox'].insert(0,final)
     def save(self):
@@ -146,20 +149,24 @@ class NPCWindow(Application):
         self.elements['threatBox'].current(0)
         self.builder.get_object('spaceLabel1').lower()
         self.builder.get_object('spaceLabel2').lower()
+        self.showAttributes()
         for trait in self.npc['traits']:
             try:
                 self.builder.get_object(trait).grid_remove()
             except:
                 print("%sEntry not found" % trait)
-        self.updateDisplay()
         self.toggleEdit()
-
     def okay(self, event = None):
-        npcs[self.npc['name']]['gender'] = self.npc['gender']
-        npcs[self.npc['name']]['species'] = self.npc['species']
-        npcs[self.npc['name']]['text'] = self.npc['text']
-        npcs[self.npc['name']]['traits'] = self.npc['traits']
-        npcs[self.npc['name']]['attributes'] = self.npc['attributes']
+        name = self.npc['name']
+        npcs[name]['gender'] = self.npc['gender']
+        npcs[name]['species'] = self.npc['species']
+        npcs[name]['text'] = self.npc['text']
+        npcs[name]['type'] = self.npc['type']
+        npcs[name]['reach'] = self.npc['reach']
+        npcs[name]['size'] = self.npc['size']
+        npcs[name]['speed'] = self.npc['speed']
+        npcs[name]['traits'] = self.npc['traits']
+        npcs[name]['attributes'] = self.npc['attributes']
         self.quit()
 
     def toggleEdit(self, event = None):
@@ -167,9 +174,6 @@ class NPCWindow(Application):
             for element in self.elements:
                 if 'Box' in element:
                     self.elements[element]['state'] = 'readonly'
-            self.elements['speciesBox']['state'] = 'readonly'
-            self.elements['genderBox']['state'] ='readonly'
-            self.elements['nameBox']['state'] = 'normal'
             for trait in self.npc['traits']:
                 try:
                     self.builder.get_object(trait).grid()
@@ -190,9 +194,6 @@ class NPCWindow(Application):
             for element in self.elements:
                 if 'Box' in element:
                     self.elements[element]['state'] = 'disabled'
-            self.elements['speciesBox']['state'] = 'disabled'
-            self.elements['genderBox']['state'] ='disabled'
-            self.elements['nameBox']['state'] = 'disabled'
             for trait in self.npc['traits']:
                 try:
                     self.builder.get_object("%sEntry" % trait).grid()
@@ -229,12 +230,29 @@ class NPCWindow(Application):
         self.npc['speed'] = self.elements['speedBox'].get()
         exp += max([0, (int(self.npc['speed']) - 30) / 10])
         self.npc['size'] = self.elements['sizeBox'].get()
+        self.npc['reach'] = self.elements['reachBox'].get()
+        exp += int(self.npc['reach']) - 1
+        self.npc['type'] = self.elements['typeBox'].get()
+        npcType = traitTables['types'][self.npc['type']]
+        exp += npcType['exp']
 
         for attribute in self.npc['attributes']:
-            self.npc['attributes'][attribute] = self.builder.get_object("%sEntry" % attribute).get()
+            attEntry = self.builder.get_object("{}Entry".format(attribute))
+            if 'attributeLimits' in npcType:
+                if attribute in  npcType['attributeLimits']:
+                    if int(attEntry.get()) > npcType['attributeLimits'][attribute]:
+                        attEntry.delete(0, "end")
+                        attEntry.insert("end", npcType['attributeLimits'][attribute])
+            self.npc['attributes'][attribute] = attEntry.get()
             exp += max([0, int(self.npc['attributes'][attribute]) - 10])
         for trait in self.npc['traits']:
-            self.npc['traits'][trait] = self.builder.get_object(trait).get()
+            traitEntry = self.builder.get_object(trait)
+            if 'traitLimits' in npcType:
+                if trait in npcType['traitLimits']:
+                    if int(traitEntry.get()) > npcType['traitLimits'][trait]:
+                        traitEntry.delete(0, "end")
+                        traitEntry.insert("end", npcType['traitLimits']['trait'])
+            self.npc['traits'][trait] = traitEntry.get()
             exp += int(self.npc['traits'][trait])
         self.npc['text'] = self.elements['textArea'].get("1.0","end").strip()
         self.npc['experience'] = exp
@@ -279,20 +297,20 @@ class NPCWindow(Application):
             else:
                 sign = ""
             self.builder.get_object(calc)['text'] = "{}{}".format(sign, value)
-        self.builder.get_object('experience')['text'] = "%d" % self.npc['experience']
+        expLabel = self.builder.get_object('experience')
+        self.builder.get_object('experience')['text'] = "{}".format(self.npc['experience'])
 
     def showAttributes(self):
         for trait,value in self.npc['traits'].items():
             box = self.builder.get_object("%s" % trait)
             box['state'] = 'normal'
             box.set(value)
-            box['state'] = 'readonly'
         for attribute,value in self.npc['attributes'].items():
-            box = self.builder.get_object("%s" % trait)
+            box = self.builder.get_object("%sEntry" % attribute)
             box['state'] = 'normal'
             box.delete(0, "end")
             box.insert("end", "{}".format(self.npc['attributes'][attribute]))
-            box['state'] = 'readonly'
+        self.updateAttributes()
         
 
 class MessageWindow(Application):
