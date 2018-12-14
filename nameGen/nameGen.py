@@ -130,12 +130,13 @@ class NPCWindow(Application):
             'cancelClicked': self.quit,
             'nameChanged': self.rename,
             'attributeChanged': self.updateAttributes,
-            'threatUpdated' : self.updateDisplay
+            'threatUpdated' : self.updateDisplay,
+            'openAttackWindow' : self.openAttackWindow
         }, npc['name'])
         self.npc = copy.deepcopy(npc)
         self.elements = {}
         uiList = ['threatLabel', 'nameBox', 'textArea', 'genderBox', 'speciesBox', 'toggleButton',
-                'threatBox', 'reachBox', 'sizeBox', 'speedBox', 'typeBox']
+                'threatBox', 'reachBox', 'sizeBox', 'speedBox', 'typeBox', 'attackList']
         for element in uiList:
             self.elements[element] = self.builder.get_object(element)
         self.elements['nameBox'].insert("end", self.npc['name'])
@@ -147,6 +148,11 @@ class NPCWindow(Application):
         self.elements['speedBox'].set(self.npc['speed'])
         self.elements['typeBox'].set(self.npc['type'])
         self.elements['threatBox'].current(0)
+        self.elements['attackWindow'] = None
+        attackString = "Type        Grade"
+        for attack in self.npc['attackList']:
+            attackString += "\n{}       {}".format(attack.type,attack.grade)
+        self.elements['attackList'].insert("end", attackString)
         self.builder.get_object('spaceLabel1').lower()
         self.builder.get_object('spaceLabel2').lower()
         self.showAttributes()
@@ -167,6 +173,7 @@ class NPCWindow(Application):
         npcs[name]['speed'] = self.npc['speed']
         npcs[name]['traits'] = self.npc['traits']
         npcs[name]['attributes'] = self.npc['attributes']
+        npcs[name]['attackList'] = self.npc['attackList']
         self.quit()
 
     def toggleEdit(self, event = None):
@@ -311,7 +318,53 @@ class NPCWindow(Application):
             box.delete(0, "end")
             box.insert("end", "{}".format(self.npc['attributes'][attribute]))
         self.updateAttributes()
+
+    def openAttackWindow(self):
+        if self.elements['attackWindow'] == None:
+            self.elements['attackWindow'] = AttackWindow(self)
+        else :
+            self.elements['attackWindow'].lift()
+
+    def updateAttackList(self, attackList):
+        self.npc['attackList'] = attackList
+
+    def closeAttackWindow(self):
+        self.elements['attackWindow'].quit()
+        self.elements['attackWindow'] = None
         
+class AttackWindow(Application):
+    def __init__(self, parent):
+        super().__init__("attackWindow",{
+                "updateAttack" : self.updateAttack,
+                "updateCombos" : self.updateCombos,
+                "close"        : self.close
+            }, 
+            "Attacks")
+        self['attackList'] = parent.npc['attackList']
+        self['parent'] = parent
+        self.listBox = self.builder.get_object('attackList')
+        self.gradeBox = self.builder.get_object('gradeBox')
+        self.typeBox = self.builder.get_object('typeBox')
+        self.listBox['listvariable'] = self['attackList']
+
+    def newAttack(self, event = None):
+        self['attackList'].push({"type" : "Bite", "Grade" : 1})
+
+    def deleteAttack(self, event = None):
+        del self['attackList'][self.builder.get_object("attackList").current()]
+
+    def updateAttack(self, event = None):
+        self['attackList'][self.listBox.current()]['type'] = self.typeBox.get()
+        self['attackList'][self.listBox.current()]['grade'] = self.gradeBox.get()
+
+    def updateCombos(self, event = None):
+        self.typeBox.set(self['attackList'][self.listBox.current()]['type'])
+        self.gradeBox.set(self['attackList'][self.listBox.current()]['grade'])
+
+    def close(self):
+        self['parent'].updateAttackList(self['attackList'])
+        self['parent'].closeAttackWindow()
+
 
 class MessageWindow(Application):
     def __init__(self, question, callbackYes, callbackNo, title = "Message Box", labelYes = 'Yes', labelNo = 'No'):

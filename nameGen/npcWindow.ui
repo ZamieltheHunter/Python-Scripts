@@ -785,13 +785,38 @@
                   </object>
                 </child>
                 <child>
-                  <object class="ttk.Label" id="attacks Space">
-                    <property name="width">30</property>
+                  <object class="ttk.Button" id="attacksButton">
+                    <property name="command">openAttackWindow</property>
+                    <property name="text" translatable="yes">...</property>
+                    <property name="width">2</property>
+                    <bind add="" handler="callback" sequence="&lt;ButtonClick&gt;" />
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Frame" id="listFrame">
+                    <property name="height">200</property>
+                    <property name="width">200</property>
                     <layout>
                       <property name="column">0</property>
                       <property name="propagate">True</property>
-                      <property name="row">1</property>
+                      <property name="row">2</property>
                     </layout>
+                    <child>
+                      <object class="tk.Text" id="attackList">
+                        <property name="height">5</property>
+                        <property name="width">35</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -825,7 +850,7 @@
                     <property name="insertunfocussed">solid</property>
                     <property name="relief">raised</property>
                     <property name="takefocus">false</property>
-                    <property name="width">40</property>
+                    <property name="width">35</property>
                     <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
                     <layout>
                       <property name="column">0</property>
