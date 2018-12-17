@@ -341,6 +341,7 @@ class AttackWindow(Application):
                 "close"         : self.close,
                 "newAttack"     : self.newAttack,
                 "deleteAttack"  : self.deleteAttack,
+                "updateCheck"   : self.updateCheck
             }, 
             "Attacks")
         self.listBox = self.builder.get_object('attackList')
@@ -382,6 +383,24 @@ class AttackWindow(Application):
             self.current = self.listBox.get(self.listBox.curselection())
             self.typeBox.set(self.props['attacks'][self.current]['type'])
             self.gradeBox.set(self.props['attacks'][self.current]['grade'])
+
+    def updateCheck(self, event = None):
+        for upgrade,kind in TraitTables['attackUpgrades'].items():
+            if kind == "basic":
+                self.props['attacks']['upgrades'][upgrade] = self.builder.get_object(upgrade).ticket()
+            else if kind == "grade":
+                if self.builder.get_object(upgrade).ticked():
+                    self.props['attacks']['upgrades'][upgrade] = self.builder.get_object("{}Entry".format(upgrade)).get()
+                else:
+                    self.props['attacks']['upgrades'][upgrade] = 0
+            else if kind == 'entry':
+                pass
+            else if kind == 'combo':
+                pass
+
+                    
+
+        pass
 
     def close(self):
         self.props['parent'].updateAttackList(self.props['attacks'])

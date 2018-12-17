@@ -107,5 +107,20 @@
                 "Light Sensitive": 0
             }
         }
+    },
+    "attackUpgrades" : {
+        "aligned" : "basic",
+        "bleed" : "basic",
+        "finesse" : "basic",
+        "grab" : "basic",
+        "trip" : "basic",
+        "armorpiercing":"grade",
+        "keen" : "grade",
+        "reach" : "grade",
+        "altdmg": "combo",
+        "diseased": "entry",
+        "venomous": "entry"
+    }
+
     }
 }

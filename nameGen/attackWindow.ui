@@ -23,9 +23,9 @@
             </layout>
             <child>
               <object class="tk.Label" id="attacksLabel">
-                <property name="compound">top</property>
+                <property name="compound">bottom</property>
                 <property name="font">TkDefaultFont</property>
-                <property name="text" translatable="yes">Upgrades:</property>
+                <property name="text" translatable="yes">Attacks:</property>
                 <layout>
                   <property name="column">0</property>
                   <property name="propagate">True</property>
@@ -50,7 +50,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Frame" id="comboFrame">
+          <object class="ttk.Frame" id="infoFrame">
             <property name="height">200</property>
             <property name="width">200</property>
             <layout>
@@ -59,47 +59,286 @@
               <property name="row">0</property>
             </layout>
             <child>
-              <object class="tk.Label" id="typeLabel">
-                <property name="text" translatable="yes">Type:</property>
+              <object class="tk.Frame" id="basicFrame">
+                <property name="height">200</property>
+                <property name="width">206</property>
                 <layout>
                   <property name="column">0</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
                 </layout>
+                <child>
+                  <object class="tk.Label" id="typeLabel">
+                    <property name="text" translatable="yes">Type:</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Combobox" id="typeBox">
+                    <property name="values">Bite Slam Gore Squeeze Swallow Tail Trample</property>
+                    <property name="width">7</property>
+                    <bind add="" handler="updateAttack" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="padx">3</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="tk.Label" id="gradeLabel">
+                    <property name="text" translatable="yes">Grade:</property>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="padx">3</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Combobox" id="gradeBox">
+                    <property name="values">1 2 3 4 5</property>
+                    <property name="width">7</property>
+                    <bind add="" handler="updateAttack" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
+                    <layout>
+                      <property name="column">3</property>
+                      <property name="padx">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Checkbutton" id="natural">
+                    <property name="text" translatable="yes">Natural</property>
+                    <property name="width">6</property>
+                    <layout>
+                      <property name="column">4</property>
+                      <property name="padx">6</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
-              <object class="ttk.Combobox" id="typeBox">
-                <property name="values">Bite Slam Gore Squeeze Swallow Tail Trample</property>
-                <property name="width">7</property>
-                <bind add="" handler="updateAttack" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
+              <object class="ttk.Frame" id="extraFrame">
+                <property name="height">200</property>
+                <property name="width">200</property>
                 <layout>
-                  <property name="column">1</property>
+                  <property name="column">0</property>
                   <property name="propagate">True</property>
-                  <property name="row">0</property>
+                  <property name="row">1</property>
                 </layout>
-              </object>
-            </child>
-            <child>
-              <object class="tk.Label" id="gradeLabel">
-                <property name="text" translatable="yes">Grade:</property>
-                <layout>
-                  <property name="column">2</property>
-                  <property name="propagate">True</property>
-                  <property name="row">0</property>
-                </layout>
-              </object>
-            </child>
-            <child>
-              <object class="ttk.Combobox" id="gradeBox">
-                <property name="values">1 2 3 4 5</property>
-                <property name="width">7</property>
-                <bind add="" handler="updateAttack" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
-                <layout>
-                  <property name="column">3</property>
-                  <property name="propagate">True</property>
-                  <property name="row">0</property>
-                </layout>
+                <child>
+                  <object class="ttk.Frame" id="naturalFrame">
+                    <property name="height">200</property>
+                    <property name="width">200</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                    <child>
+                      <object class="ttk.Checkbutton" id="aligned">
+                        <property name="text" translatable="yes">Aligned</property>
+                        <property name="width">6</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Checkbutton" id="bleed">
+                        <property name="text" translatable="yes">Bleed</property>
+                        <property name="width">6</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Checkbutton" id="finesse">
+                        <property name="text" translatable="yes">Finesse</property>
+                        <property name="width">6</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Checkbutton" id="grab">
+                        <property name="text" translatable="yes">Grab</property>
+                        <property name="width">4</property>
+                        <layout>
+                          <property name="column">1</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Checkbutton" id="trip">
+                        <property name="text" translatable="yes">Trip</property>
+                        <property name="width">4</property>
+                        <layout>
+                          <property name="column">1</property>
+                          <property name="propagate">True</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Checkbutton" id="armorpiercing">
+                        <property name="text" translatable="yes">Armor-Piercing</property>
+                        <property name="width">11</property>
+                        <layout>
+                          <property name="column">2</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Checkbutton" id="keen">
+                        <property name="text" translatable="yes">Keen</property>
+                        <property name="width">11</property>
+                        <layout>
+                          <property name="column">2</property>
+                          <property name="propagate">True</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Checkbutton" id="reach">
+                        <property name="text" translatable="yes">Reach</property>
+                        <property name="width">11</property>
+                        <layout>
+                          <property name="column">2</property>
+                          <property name="propagate">True</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Entry" id="armorpiercingEntry">
+                        <property name="state">readonly</property>
+                        <property name="text" translatable="yes">1</property>
+                        <property name="width">3</property>
+                        <layout>
+                          <property name="column">3</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Entry" id="keenEntry">
+                        <property name="state">readonly</property>
+                        <property name="text" translatable="yes">1</property>
+                        <property name="width">3</property>
+                        <layout>
+                          <property name="column">3</property>
+                          <property name="propagate">True</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Entry" id="reachEntry">
+                        <property name="state">readonly</property>
+                        <property name="text" translatable="yes">1</property>
+                        <property name="width">3</property>
+                        <layout>
+                          <property name="column">3</property>
+                          <property name="propagate">True</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Checkbutton" id="alternatedamage">
+                        <property name="text" translatable="yes">Alternate Damage</property>
+                        <property name="width">15</property>
+                        <layout>
+                          <property name="column">4</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Checkbutton" id="diseased">
+                        <property name="text" translatable="yes">Diseased</property>
+                        <property name="width">15</property>
+                        <layout>
+                          <property name="column">4</property>
+                          <property name="propagate">True</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Checkbutton" id="venomous">
+                        <property name="text" translatable="yes">Venomous</property>
+                        <property name="width">15</property>
+                        <layout>
+                          <property name="column">4</property>
+                          <property name="propagate">True</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Combobox" id="altdmgBox">
+                        <property name="state">disabled</property>
+                        <property name="values">Acid Bang Cold Divine Electrical Explosive Fire Flash Force Heat Sonic Stress Subdual</property>
+                        <property name="width">10</property>
+                        <layout>
+                          <property name="column">5</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Entry" id="diseaseEntry">
+                        <property name="state">disabled</property>
+                        <property name="width">11</property>
+                        <layout>
+                          <property name="column">5</property>
+                          <property name="propagate">True</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Entry" id="poisonEntry">
+                        <property name="state">disabled</property>
+                        <property name="width">11</property>
+                        <layout>
+                          <property name="column">5</property>
+                          <property name="propagate">True</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
