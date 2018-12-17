@@ -527,7 +527,7 @@
                         <property name="state">readonly</property>
                         <property name="values">1 2 3 4 5 6 7 8 9 10</property>
                         <property name="width">3</property>
-                        <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
+                        <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                         <layout>
                           <property name="column">1</property>
                           <property name="propagate">True</property>
@@ -566,7 +566,7 @@
                         <property name="state">readonly</property>
                         <property name="values">1 2 3 4 5 6 7 8 9 10</property>
                         <property name="width">3</property>
-                        <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
+                        <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                         <layout>
                           <property name="column">3</property>
                           <property name="propagate">True</property>
@@ -604,7 +604,7 @@
                         <property name="state">readonly</property>
                         <property name="values">1 2 3 4 5 6 7 8 9 10</property>
                         <property name="width">3</property>
-                        <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
+                        <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                         <layout>
                           <property name="column">1</property>
                           <property name="propagate">True</property>
@@ -639,7 +639,7 @@
                         <property name="state">readonly</property>
                         <property name="values">1 2 3 4 5 6 7 8 9 10</property>
                         <property name="width">3</property>
-                        <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
+                        <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                         <layout>
                           <property name="column">3</property>
                           <property name="propagate">True</property>
@@ -675,7 +675,7 @@
                         <property name="state">readonly</property>
                         <property name="values">0 1 2 3 4 5 6 7 8 9 10</property>
                         <property name="width">3</property>
-                        <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
+                        <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                         <layout>
                           <property name="column">1</property>
                           <property name="propagate">True</property>
@@ -711,7 +711,7 @@
                         <property name="state">readonly</property>
                         <property name="values">1 2 3 4 5 6 7 8 9 10</property>
                         <property name="width">3</property>
-                        <bind add="" handler="attributeChanged" sequence="&lt;FocusOut&gt;" />
+                        <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                         <layout>
                           <property name="column">3</property>
                           <property name="propagate">True</property>
@@ -785,19 +785,6 @@
                   </object>
                 </child>
                 <child>
-                  <object class="ttk.Button" id="attacksButton">
-                    <property name="command">openAttackWindow</property>
-                    <property name="text" translatable="yes">...</property>
-                    <property name="width">2</property>
-                    <bind add="" handler="callback" sequence="&lt;ButtonClick&gt;" />
-                    <layout>
-                      <property name="column">1</property>
-                      <property name="propagate">True</property>
-                      <property name="row">0</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
                   <object class="ttk.Frame" id="listFrame">
                     <property name="height">200</property>
                     <property name="width">200</property>
@@ -817,6 +804,18 @@
                         </layout>
                       </object>
                     </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Button" id="attacksButton">
+                    <property name="command">openAttackWindow</property>
+                    <property name="text" translatable="yes">....</property>
+                    <property name="width">2</property>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
                   </object>
                 </child>
               </object>

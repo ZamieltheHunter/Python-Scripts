@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
-  <object class="tk.Toplevel" id="Toplevel_1">
+  <object class="tk.Toplevel" id="attackWindow">
     <property name="height">200</property>
     <property name="width">200</property>
     <child>
@@ -35,8 +35,11 @@
             </child>
             <child>
               <object class="tk.Listbox" id="attackList">
+                <property name="activestyle">dotbox</property>
                 <property name="height">3</property>
+                <property name="selectmode">single</property>
                 <property name="width">15</property>
+                <bind add="" handler="updateCombos" sequence="&lt;&lt;ListboxSelect&gt;&gt;" />
                 <layout>
                   <property name="column">0</property>
                   <property name="propagate">True</property>
@@ -67,7 +70,9 @@
             </child>
             <child>
               <object class="ttk.Combobox" id="typeBox">
+                <property name="values">Bite Slam Gore Squeeze Swallow Tail Trample</property>
                 <property name="width">7</property>
+                <bind add="" handler="updateAttack" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                 <layout>
                   <property name="column">1</property>
                   <property name="propagate">True</property>
@@ -87,7 +92,9 @@
             </child>
             <child>
               <object class="ttk.Combobox" id="gradeBox">
+                <property name="values">1 2 3 4 5</property>
                 <property name="width">7</property>
+                <bind add="" handler="updateAttack" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                 <layout>
                   <property name="column">3</property>
                   <property name="propagate">True</property>
@@ -119,6 +126,7 @@
             </layout>
             <child>
               <object class="ttk.Button" id="newButton">
+                <property name="command">newAttack</property>
                 <property name="text" translatable="yes">New Attack</property>
                 <layout>
                   <property name="column">0</property>
@@ -129,6 +137,7 @@
             </child>
             <child>
               <object class="ttk.Button" id="deleteButton">
+                <property name="command">deleteAttack</property>
                 <property name="text" translatable="yes">Delete Attack</property>
                 <layout>
                   <property name="column">1</property>

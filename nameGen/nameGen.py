@@ -8,6 +8,7 @@ from math import floor
 import csv
 import sys
 import copy
+import pprint
 
 class Application:
     def __init__(self, window, callbacks, title = None):
@@ -335,52 +336,81 @@ class NPCWindow(Application):
 class AttackWindow(Application):
     def __init__(self, parent):
         super().__init__("attackWindow",{
-                "updateAttack" : self.updateAttack,
-                "updateCombos" : self.updateCombos,
-                "close"        : self.close
+                "updateAttack"  : self.updateAttack,
+                "updateCombos"  : self.updateCombos,
+                "close"         : self.close,
+                "newAttack"     : self.newAttack,
+                "deleteAttack"  : self.deleteAttack,
             }, 
             "Attacks")
-        self['attackList'] = parent.npc['attackList']
-        self['parent'] = parent
         self.listBox = self.builder.get_object('attackList')
         self.gradeBox = self.builder.get_object('gradeBox')
         self.typeBox = self.builder.get_object('typeBox')
-        self.listBox['listvariable'] = self['attackList']
+        self.current = None
+
+        self.props = {
+                'attacks'       : parent.npc['attackList'],
+                'parent'        : parent
+            }
+        for attack in self.props['attacks']:
+            self.listBox.insert("end", attack)
+
+        self.mainwindow.protocol("WM_DELETE_WINDOW", self.close)
 
     def newAttack(self, event = None):
-        self['attackList'].push({"type" : "Bite", "Grade" : 1})
+            messagebox = MessageWindow("New Attack", self.addAttack, None, "Name your new attack", "Okay", "Cancel", True)
+        
+    def addAttack(self, name):
+        if name in self.props['attacks']:
+            messageBox = MessageWindow("New Attack", self.addAttack, None, "Name already taken choose another", "Okay", "Cancel", True)
+        else :
+            self.props['attacks'][name] = {"type" : "Bite", "grade" : 1}
+            self.listBox.insert("end", name)
 
     def deleteAttack(self, event = None):
-        del self['attackList'][self.builder.get_object("attackList").current()]
+        del self.props['attacks'][self.listBox.get("active")]
+        self.listBox.delete("active")
+        self.current = None
 
     def updateAttack(self, event = None):
-        self['attackList'][self.listBox.current()]['type'] = self.typeBox.get()
-        self['attackList'][self.listBox.current()]['grade'] = self.gradeBox.get()
+        if self.current != None:
+            self.props['attacks'][self.current]['type'] = self.typeBox.get()
+            self.props['attacks'][self.current]['grade'] = self.gradeBox.get()
 
     def updateCombos(self, event = None):
-        self.typeBox.set(self['attackList'][self.listBox.current()]['type'])
-        self.gradeBox.set(self['attackList'][self.listBox.current()]['grade'])
+        if len(self.listBox.curselection()) == 1:
+            self.current = self.listBox.get(self.listBox.curselection())
+            self.typeBox.set(self.props['attacks'][self.current]['type'])
+            self.gradeBox.set(self.props['attacks'][self.current]['grade'])
 
     def close(self):
-        self['parent'].updateAttackList(self['attackList'])
-        self['parent'].closeAttackWindow()
+        self.props['parent'].updateAttackList(self.props['attacks'])
+        self.props['parent'].closeAttackWindow()
 
 
 class MessageWindow(Application):
-    def __init__(self, question, callbackYes, callbackNo, title = "Message Box", labelYes = 'Yes', labelNo = 'No'):
+    def __init__(self, question, callbackYes, callbackNo, title = "Message Box", labelYes = 'Yes', labelNo = 'No', entry = False):
         super().__init__('messageWindow', {
                 'yesClick' : self.yes,
                 'noClick' : self.no,
             },title)
         self.callbackYes = callbackYes
         self.callbackNo = callbackNo
+        self.entry = entry
         self.builder.get_object('yesButton')['text']  = labelYes
         self.builder.get_object('noButton')['text'] = labelNo
         self.builder.get_object('message')['text'] = question
+        if not self.entry:
+            self.builder.get_object('entryBox').grid_remove()
     def yes(self, event = None):
+        if self.entry:
+            value = self.builder.get_object('entryBox').get()
         self.quit()
         if self.callbackYes != None:
-            self.callbackYes()
+            if self.entry:
+                self.callbackYes(value)
+            else:
+                self.callbackYes()
     def no(self, event = None):
         self.quit()
         if self.callbackNo != None:

@@ -126,8 +126,7 @@
               <object class="tk.Listbox" id="listBox">
                 <property name="font">TkDefaultFont</property>
                 <property name="height">12</property>
-                <property name="relief">flat</property>
-                <property name="takefocus">false</property>
+                <property name="selectmode">single</property>
                 <layout>
                   <property name="column">0</property>
                   <property name="padx">10</property>
