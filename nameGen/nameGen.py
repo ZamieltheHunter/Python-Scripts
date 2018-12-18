@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import tkinter as tk
+from tkinter import *
 import json
 import pygubu
 from npc import *
@@ -150,10 +151,7 @@ class NPCWindow(Application):
         self.elements['typeBox'].set(self.npc['type'])
         self.elements['threatBox'].current(0)
         self.elements['attackWindow'] = None
-        attackString = "Type        Grade"
-        for attack in self.npc['attackList']:
-            attackString += "\n{}       {}".format(attack.type,attack.grade)
-        self.elements['attackList'].insert("end", attackString)
+        self.printAttackString()
         self.builder.get_object('spaceLabel1').lower()
         self.builder.get_object('spaceLabel2').lower()
         self.showAttributes()
@@ -176,12 +174,52 @@ class NPCWindow(Application):
         npcs[name]['attributes'] = self.npc['attributes']
         npcs[name]['attackList'] = self.npc['attackList']
         self.quit()
+    def printAttackString(self):
+        attackString = "Name\tTo-Hit\tThreat\tDamage"
+        for attackName,attack in self.npc['attackList'].items():
+            attackAttr = self.npc['attributes']['str'] if attack['upgrades']['finesse']['state'] == 0 else self.npc['attributes']['dex']
+            mod = int((int(attackAttr) - 10) / 2)
+            threat = int(self.elements['threatBox'].get())
+            traitMod =  int(traitTables['tables'][1][int(self.npc['traits']['attack']) - 1][threat])
+            bonus = mod + traitMod
+            sizeCat = self.npc['size'][0]
+            dieMod = traitTables['naturalAttacks'][attack['type']]['die'] + traitTables['sizeMod'][sizeCat]
+            dmgDie = traitTables['naturalAttacks']['dice'][dieMod]
+            numDice = int(dmgDie[0])
+            dieType = dmgDie[1:]
+            if int(attack['grade']) == 5:
+                numDice *= 3
+            elif int(attack['grade']) > 2:
+                numDice *= 2
+            dmgDie = "{}{}".format(numDice, dieType)
+
+            dmgBonus = int((int(self.npc['attributes']['str']) -10) / 2)
+            if dmgBonus > 0:
+                dmgBonus = "+{}".format(dmgBonus)
+            elif dmgBonus < 0:
+                dmgBonus = "-{}".format(dmgBonus)
+            dmgType = "lethal" if attack['upgrades']['alternatedamage']['state'] == 0 else attack['upgrades']['alternatedamage']['value']
+            damage = "{}{}({})".format(dmgDie, dmgBonus, dmgType)
+
+            critThreat = traitTables['naturalAttacks'][attack['type']]['threat']
+
+            if critThreat != 0:
+                critThreat -= int(attack['grade']) % 2
+                threatRange = "{}-20".format(critThreat) if critThreat != 20 else "20"
+            else:
+                threatRange = "-"
+            attackString += "\n{}\t{}\t{}\t{}".format(attackName, bonus, threatRange, damage)
+        self.elements['attackList'].delete('1.0', "end")
+        self.elements['attackList'].insert("end", attackString)
 
     def toggleEdit(self, event = None):
         if self.elements['speciesBox'].state() == ("disabled",):
             for element in self.elements:
                 if 'Box' in element:
-                    self.elements[element]['state'] = 'readonly'
+                    if element != 'threatBox':
+                        self.elements[element]['state'] = 'readonly'
+                    else :
+                        self.elements[element]['state'] = 'disabled'
             for trait in self.npc['traits']:
                 try:
                     self.builder.get_object(trait).grid()
@@ -201,7 +239,10 @@ class NPCWindow(Application):
         else: 
             for element in self.elements:
                 if 'Box' in element:
-                    self.elements[element]['state'] = 'disabled'
+                    if element != 'threatBox':
+                        self.elements[element]['state'] = 'disabled'
+                    else :
+                        self.elements[element]['state'] = 'readonly'
             for trait in self.npc['traits']:
                 try:
                     self.builder.get_object("%sEntry" % trait).grid()
@@ -232,18 +273,13 @@ class NPCWindow(Application):
             self.elements['nameBox'].insert("end", oldName)
 
     def updateAttributes(self, event = None):
-        exp = 0
         self.npc['gender'] = self.elements['genderBox'].get()
         self.npc['species'] = self.elements['speciesBox'].get()
         self.npc['speed'] = self.elements['speedBox'].get()
-        exp += max([0, (int(self.npc['speed']) - 30) / 10])
         self.npc['size'] = self.elements['sizeBox'].get()
         self.npc['reach'] = self.elements['reachBox'].get()
-        exp += int(self.npc['reach']) - 1
         self.npc['type'] = self.elements['typeBox'].get()
         npcType = traitTables['types'][self.npc['type']]
-        exp += npcType['exp']
-
         for attribute in self.npc['attributes']:
             attEntry = self.builder.get_object("{}Entry".format(attribute))
             if 'attributeLimits' in npcType:
@@ -252,7 +288,6 @@ class NPCWindow(Application):
                         attEntry.delete(0, "end")
                         attEntry.insert("end", npcType['attributeLimits'][attribute])
             self.npc['attributes'][attribute] = attEntry.get()
-            exp += max([0, int(self.npc['attributes'][attribute]) - 10])
         for trait in self.npc['traits']:
             traitEntry = self.builder.get_object(trait)
             if 'traitLimits' in npcType:
@@ -261,9 +296,30 @@ class NPCWindow(Application):
                         traitEntry.delete(0, "end")
                         traitEntry.insert("end", npcType['traitLimits']['trait'])
             self.npc['traits'][trait] = traitEntry.get()
-            exp += int(self.npc['traits'][trait])
+
         self.npc['text'] = self.elements['textArea'].get("1.0","end").strip()
-        self.npc['experience'] = exp
+        self.calculateXP()
+
+    def calculateXP(self):
+        xp = 0
+        xp += max([0, (int(self.npc['speed']) - 30) / 10])
+        xp += int(self.npc['reach']) - 1
+        xp += traitTables['types'][self.npc['type']]['exp']
+        for attribute in self.npc['attributes']:
+            xp += max([0, int(self.npc['attributes'][attribute]) - 10])
+        for trait in self.npc['traits']:
+            xp += int(self.npc['traits'][trait])
+        for attackName, attack in self.npc['attackList'].items():
+            xp += 2 * int(attack['grade'])
+            for upgrade, kind in traitTables['attackUpgrades'].items():
+                if kind == 'graded':
+                    xp += 2 * attack['upgrades'][upgrade]['state'] * attack['upgrades'][upgrade]['value']
+                else: 
+                    xp += 2 * attack['upgrades'][upgrade]['state']
+        self.npc['experience'] = xp
+
+
+
 
     def updateDisplay(self, event = None):
         mods = {}
@@ -275,7 +331,7 @@ class NPCWindow(Application):
             threat = int(self.elements['threatBox'].get())
             box['state'] = "normal"
             box.delete(0,"end")
-            finTraits[trait] = 0 if traitValue == -1 else int(traitTables['tables'][table][traitValue][threat])
+            finTraits[trait] = 0 if traitValue == -1 else int(traitTables['tables'][table][traitValue][threat - 1])
             box.insert("end", "{}".format(finTraits[trait]))
             box['state'] = "readonly"
         for attribute, value in self.npc['attributes'].items():
@@ -307,6 +363,7 @@ class NPCWindow(Application):
             self.builder.get_object(calc)['text'] = "{}{}".format(sign, value)
         expLabel = self.builder.get_object('experience')
         self.builder.get_object('experience')['text'] = "{}".format(self.npc['experience'])
+        self.printAttackString()
 
     def showAttributes(self):
         for trait,value in self.npc['traits'].items():
@@ -328,6 +385,8 @@ class NPCWindow(Application):
 
     def updateAttackList(self, attackList):
         self.npc['attackList'] = attackList
+        self.calculateXP()
+        self.updateDisplay()
 
     def closeAttackWindow(self):
         self.elements['attackWindow'].quit()
@@ -337,11 +396,12 @@ class AttackWindow(Application):
     def __init__(self, parent):
         super().__init__("attackWindow",{
                 "updateAttack"  : self.updateAttack,
-                "updateCombos"  : self.updateCombos,
+                "switchAttack"  : self.switchAttack,
                 "close"         : self.close,
                 "newAttack"     : self.newAttack,
                 "deleteAttack"  : self.deleteAttack,
-                "updateCheck"   : self.updateCheck
+                "updateCheck"   : self.updateCheck,
+                "valueUpdate"   : self.valueUpdate
             }, 
             "Attacks")
         self.listBox = self.builder.get_object('attackList')
@@ -351,22 +411,38 @@ class AttackWindow(Application):
 
         self.props = {
                 'attacks'       : parent.npc['attackList'],
-                'parent'        : parent
+                'parent'        : parent,
+                'checks'        : {}
             }
+        self.props['checks']['natural'] = IntVar()
+        self.builder.get_object('natural')['variable'] = self.props['checks']['natural']
+        self.props['checks']['natural'].set(1)
+
         for attack in self.props['attacks']:
             self.listBox.insert("end", attack)
+        for upgrade in traitTables['attackUpgrades']:
+            self.props['checks'][upgrade] = IntVar()
+            self.props['checks'][upgrade].set(0)
+            self.builder.get_object(upgrade)['variable'] = self.props['checks'][upgrade]
 
         self.mainwindow.protocol("WM_DELETE_WINDOW", self.close)
 
     def newAttack(self, event = None):
-            messagebox = MessageWindow("New Attack", self.addAttack, None, "Name your new attack", "Okay", "Cancel", True)
+            messagebox = MessageWindow("Name your new attack", self.addAttack, None, "New Attack", "Okay", "Cancel", True)
         
     def addAttack(self, name):
         if name in self.props['attacks']:
-            messageBox = MessageWindow("New Attack", self.addAttack, None, "Name already taken choose another", "Okay", "Cancel", True)
+            messageBox = MessageWindow("Already has attack with that name choose another", self.addAttack, None, "New Attack", "Okay", "Cancel", True)
         else :
-            self.props['attacks'][name] = {"type" : "Bite", "grade" : 1}
+            self.props['attacks'][name] = {"type" : "Bite", "grade" : 1, "upgrades" : {}}
+            for upgrade in traitTables['attackUpgrades']:
+                self.props['attacks'][name]['upgrades'][upgrade] = { "state" : 0, "value": None}
             self.listBox.insert("end", name)
+            self.current = name
+            if len(self.listBox.curselection()) != 0:
+                self.listBox.selection_clear(self.listBox.curselection())
+            self.listBox.selection_set(self.listBox.size() - 1)
+            self.switchAttack()
 
     def deleteAttack(self, event = None):
         del self.props['attacks'][self.listBox.get("active")]
@@ -378,29 +454,57 @@ class AttackWindow(Application):
             self.props['attacks'][self.current]['type'] = self.typeBox.get()
             self.props['attacks'][self.current]['grade'] = self.gradeBox.get()
 
-    def updateCombos(self, event = None):
+    def switchAttack(self, event = None):
         if len(self.listBox.curselection()) == 1:
             self.current = self.listBox.get(self.listBox.curselection())
+        if self.current != None:
             self.typeBox.set(self.props['attacks'][self.current]['type'])
             self.gradeBox.set(self.props['attacks'][self.current]['grade'])
+            for upgrade,kind in traitTables['attackUpgrades'].items():
+                self.props['checks'][upgrade].set(self.props['attacks'][self.current]['upgrades'][upgrade]['state'])
+                value = self.props['attacks'][self.current]['upgrades'][upgrade]['value']
+                value = value if value else ""
+                if kind == 'graded' or kind == 'entry':
+                    entry = self.builder.get_object("{}Entry".format(upgrade))
+                    entry['state'] = 'normal'
+                    entry.delete(0, "end")
+                    entry.insert("end", value)
+                    if self.props['checks'][upgrade].get() == 0:
+                        entry['state'] = 'disabled'
+                elif kind == 'combo':
+                    box = self.builder.get_object("{}Box".format(upgrade))
+                    box['state'] = 'readonly'
+                    box.set(value)
+                    if self.props['checks'][upgrade].get() == 0:
+                        box['state'] = 'disabled'
+
 
     def updateCheck(self, event = None):
-        for upgrade,kind in TraitTables['attackUpgrades'].items():
-            if kind == "basic":
-                self.props['attacks']['upgrades'][upgrade] = self.builder.get_object(upgrade).ticket()
-            else if kind == "grade":
-                if self.builder.get_object(upgrade).ticked():
-                    self.props['attacks']['upgrades'][upgrade] = self.builder.get_object("{}Entry".format(upgrade)).get()
-                else:
-                    self.props['attacks']['upgrades'][upgrade] = 0
-            else if kind == 'entry':
-                pass
-            else if kind == 'combo':
-                pass
+        if self.current != None:
+            for upgrade,kind in traitTables['attackUpgrades'].items():
+                if kind == 'graded' or kind == 'entry':
+                    if self.props['checks'][upgrade].get() == 1:
+                        self.builder.get_object("{}Entry".format(upgrade))['state'] = "normal"
+                    else:
+                        self.builder.get_object("{}Entry".format(upgrade))['state'] = "disabled"
+                elif kind == 'combo':
+                    if self.props['checks'][upgrade].get() == 1:
+                        self.builder.get_object("{}Box".format(upgrade))['state'] = 'readonly'
+                    else:
+                        self.builder.get_object("{}Box".format(upgrade))['state'] = 'disabled'
+                self.props['attacks'][self.current]['upgrades'][upgrade]['state'] = self.props['checks'][upgrade].get()
 
-                    
-
-        pass
+                        
+    def valueUpdate(self, event = None):
+        for upgrade, kind in traitTables['attackUpgrades'].items():
+            if self.props['checks'][upgrade].get() == 1:
+                if kind == 'entry':
+                    self.props['attacks'][self.current]['upgrades'][upgrade]['value'] = self.builder.get_object("{}Entry".format(upgrade)).get()
+                elif kind == 'graded':
+                    self.props['attacks'][self.current]['upgrades'][upgrade]['value'] = int(self.builder.get_objects("{}Entry".format(upgrade)).get())
+                elif kind == 'combo':
+                    self.props['attacks'][self.current]['upgrades'][upgrade]['value'] = self.builder.get_object("{}Box".format(upgrade)).get()
+        self.builder.get_object('attackList').focus()
 
     def close(self):
         self.props['parent'].updateAttackList(self.props['attacks'])
@@ -419,8 +523,11 @@ class MessageWindow(Application):
         self.builder.get_object('yesButton')['text']  = labelYes
         self.builder.get_object('noButton')['text'] = labelNo
         self.builder.get_object('message')['text'] = question
-        if not self.entry:
+        if self.entry:
+            self.builder.get_object('entryBox').focus()
+        else:
             self.builder.get_object('entryBox').grid_remove()
+        
     def yes(self, event = None):
         if self.entry:
             value = self.builder.get_object('entryBox').get()

@@ -36,10 +36,11 @@
             <child>
               <object class="tk.Listbox" id="attackList">
                 <property name="activestyle">dotbox</property>
+                <property name="cursor">arrow</property>
                 <property name="height">3</property>
                 <property name="selectmode">single</property>
                 <property name="width">15</property>
-                <bind add="" handler="updateCombos" sequence="&lt;&lt;ListboxSelect&gt;&gt;" />
+                <bind add="" handler="switchAttack" sequence="&lt;&lt;ListboxSelect&gt;&gt;" />
                 <layout>
                   <property name="column">0</property>
                   <property name="propagate">True</property>
@@ -148,6 +149,7 @@
                     </layout>
                     <child>
                       <object class="ttk.Checkbutton" id="aligned">
+                        <property name="command">updateCheck</property>
                         <property name="text" translatable="yes">Aligned</property>
                         <property name="width">6</property>
                         <layout>
@@ -159,6 +161,7 @@
                     </child>
                     <child>
                       <object class="ttk.Checkbutton" id="bleed">
+                        <property name="command">updateCheck</property>
                         <property name="text" translatable="yes">Bleed</property>
                         <property name="width">6</property>
                         <layout>
@@ -170,6 +173,7 @@
                     </child>
                     <child>
                       <object class="ttk.Checkbutton" id="finesse">
+                        <property name="command">updateCheck</property>
                         <property name="text" translatable="yes">Finesse</property>
                         <property name="width">6</property>
                         <layout>
@@ -181,6 +185,7 @@
                     </child>
                     <child>
                       <object class="ttk.Checkbutton" id="grab">
+                        <property name="command">updateCheck</property>
                         <property name="text" translatable="yes">Grab</property>
                         <property name="width">4</property>
                         <layout>
@@ -192,6 +197,7 @@
                     </child>
                     <child>
                       <object class="ttk.Checkbutton" id="trip">
+                        <property name="command">updateCheck</property>
                         <property name="text" translatable="yes">Trip</property>
                         <property name="width">4</property>
                         <layout>
@@ -203,6 +209,7 @@
                     </child>
                     <child>
                       <object class="ttk.Checkbutton" id="armorpiercing">
+                        <property name="command">updateCheck</property>
                         <property name="text" translatable="yes">Armor-Piercing</property>
                         <property name="width">11</property>
                         <layout>
@@ -214,6 +221,7 @@
                     </child>
                     <child>
                       <object class="ttk.Checkbutton" id="keen">
+                        <property name="command">updateCheck</property>
                         <property name="text" translatable="yes">Keen</property>
                         <property name="width">11</property>
                         <layout>
@@ -225,6 +233,7 @@
                     </child>
                     <child>
                       <object class="ttk.Checkbutton" id="reach">
+                        <property name="command">updateCheck</property>
                         <property name="text" translatable="yes">Reach</property>
                         <property name="width">11</property>
                         <layout>
@@ -236,9 +245,11 @@
                     </child>
                     <child>
                       <object class="ttk.Entry" id="armorpiercingEntry">
-                        <property name="state">readonly</property>
+                        <property name="state">disabled</property>
                         <property name="text" translatable="yes">1</property>
                         <property name="width">3</property>
+                        <bind add="" handler="valueUpdate" sequence="&lt;FocusOut&gt;" />
+                        <bind add="" handler="valueUpdate" sequence="&lt;Return&gt;" />
                         <layout>
                           <property name="column">3</property>
                           <property name="propagate">True</property>
@@ -248,9 +259,11 @@
                     </child>
                     <child>
                       <object class="ttk.Entry" id="keenEntry">
-                        <property name="state">readonly</property>
+                        <property name="state">disabled</property>
                         <property name="text" translatable="yes">1</property>
                         <property name="width">3</property>
+                        <bind add="" handler="valueUpdate" sequence="&lt;FocusOut&gt;" />
+                        <bind add="" handler="valueUpdate" sequence="&lt;Return&gt;" />
                         <layout>
                           <property name="column">3</property>
                           <property name="propagate">True</property>
@@ -260,9 +273,11 @@
                     </child>
                     <child>
                       <object class="ttk.Entry" id="reachEntry">
-                        <property name="state">readonly</property>
+                        <property name="state">disabled</property>
                         <property name="text" translatable="yes">1</property>
                         <property name="width">3</property>
+                        <bind add="" handler="valueUpdate" sequence="&lt;FocusOut&gt;" />
+                        <bind add="" handler="valueUpdate" sequence="&lt;Return&gt;" />
                         <layout>
                           <property name="column">3</property>
                           <property name="propagate">True</property>
@@ -272,6 +287,7 @@
                     </child>
                     <child>
                       <object class="ttk.Checkbutton" id="alternatedamage">
+                        <property name="command">updateCheck</property>
                         <property name="text" translatable="yes">Alternate Damage</property>
                         <property name="width">15</property>
                         <layout>
@@ -283,6 +299,7 @@
                     </child>
                     <child>
                       <object class="ttk.Checkbutton" id="diseased">
+                        <property name="command">updateCheck</property>
                         <property name="text" translatable="yes">Diseased</property>
                         <property name="width">15</property>
                         <layout>
@@ -294,6 +311,7 @@
                     </child>
                     <child>
                       <object class="ttk.Checkbutton" id="venomous">
+                        <property name="command">updateCheck</property>
                         <property name="text" translatable="yes">Venomous</property>
                         <property name="width">15</property>
                         <layout>
@@ -304,10 +322,11 @@
                       </object>
                     </child>
                     <child>
-                      <object class="ttk.Combobox" id="altdmgBox">
+                      <object class="ttk.Combobox" id="alternatedamageBox">
                         <property name="state">disabled</property>
                         <property name="values">Acid Bang Cold Divine Electrical Explosive Fire Flash Force Heat Sonic Stress Subdual</property>
                         <property name="width">10</property>
+                        <bind add="" handler="valueUpdate" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                         <layout>
                           <property name="column">5</property>
                           <property name="propagate">True</property>
@@ -316,9 +335,11 @@
                       </object>
                     </child>
                     <child>
-                      <object class="ttk.Entry" id="diseaseEntry">
+                      <object class="ttk.Entry" id="diseasedEntry">
                         <property name="state">disabled</property>
                         <property name="width">11</property>
+                        <bind add="" handler="valueUpdate" sequence="&lt;FocusOut&gt;" />
+                        <bind add="" handler="valueUpdate" sequence="&lt;Return&gt;" />
                         <layout>
                           <property name="column">5</property>
                           <property name="propagate">True</property>
@@ -327,9 +348,11 @@
                       </object>
                     </child>
                     <child>
-                      <object class="ttk.Entry" id="poisonEntry">
+                      <object class="ttk.Entry" id="venomousEntry">
                         <property name="state">disabled</property>
                         <property name="width">11</property>
+                        <bind add="" handler="valueUpdate" sequence="&lt;FocusOut&gt;" />
+                        <bind add="" handler="valueUpdate" sequence="&lt;Return&gt;" />
                         <layout>
                           <property name="column">5</property>
                           <property name="propagate">True</property>

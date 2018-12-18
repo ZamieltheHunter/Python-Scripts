@@ -7,7 +7,7 @@
     "health" : 2,
     "signatureSkills" : 3,
     "tables" : [
-        [
+        [  
             [  0,  0,  1,  1,  1,  2,  2,  2,  3,  3,  3,  4,  4,  4,  5,  5,  5,  6,  6,  6],
             [  0,  1,  2,  2,  3,  3,  4,  4,  4,  5,  5,  6,  6,  7,  7,  8,  8,  8,  9,  9],
             [  1,  1,  2,  2,  3,  4,  4,  5,  5,  6,  7,  7,  8,  8,  9, 10, 10, 11, 11, 12],
@@ -117,10 +117,56 @@
         "armorpiercing":"grade",
         "keen" : "grade",
         "reach" : "grade",
-        "altdmg": "combo",
+        "alternatedamage": "combo",
         "diseased": "entry",
         "venomous": "entry"
-    }
-
+    },
+    "naturalAttacks" : {
+        "dice" : ["1d3", "1d4", "1d6", "1d8", "1d10", "1d12", "2d8", "2d10"],
+        "Bite": {
+            "die": 1, 
+            "threat": 18,
+            "qualities": ""
+        },
+        "Slam": {
+            "die": 0,
+            "threat": 20,
+            "qualities": ""
+        },
+        "Gore": {
+            "die": 0,
+            "threat": 19,
+            "qualities": "Bleed"
+        },
+        "Squeeze": {
+            "die": 2,
+            "threat": 0,
+            "qualities": "Grapple"
+        },
+        "Swallow": {
+            "die": 2,
+            "threat": 0,
+            "qualities": "Grapple"
+        },
+        "Tail": {
+            "die": 1,
+            "threat": 20,
+            "qualities": "Reach"
+        },
+        "Trample": {
+            "die": 1,
+            "threat": 20,
+            "qualities": ""
+        }
+    },
+    "sizeMod" : {
+        "D" : 0,
+        "T" : 0,
+        "S" : 1,
+        "M" : 2,
+        "L" : 3,
+        "H" : 4,
+        "G" : 4,
+        "C" : 5
     }
 }

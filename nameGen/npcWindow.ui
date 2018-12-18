@@ -165,7 +165,7 @@
                 </child>
                 <child>
                   <object class="ttk.Combobox" id="sizeBox">
-                    <property name="values">T(1x1)S(5x5)M(5x5) L(10x10) L(5x10) H(15x15) H(15x10) H(15x5) </property>
+                    <property name="values">T(1x1)S(1x1)M(1x1) L(2x2) L(2x1) L(2x3) H(3x3)</property>
                     <property name="width">8</property>
                     <bind add="" handler="attributeChanged" sequence="&lt;&lt;ComboboxSelected&gt;&gt;" />
                     <layout>
@@ -796,7 +796,7 @@
                     <child>
                       <object class="tk.Text" id="attackList">
                         <property name="height">5</property>
-                        <property name="width">35</property>
+                        <property name="width">45</property>
                         <layout>
                           <property name="column">0</property>
                           <property name="propagate">True</property>
@@ -977,7 +977,7 @@
                   <object class="ttk.Label" id="willLabel">
                     <property name="justify">left</property>
                     <property name="text" translatable="yes">Will:</property>
-                    <property name="width">7</property>
+                    <property name="width">9</property>
                     <layout>
                       <property name="column">0</property>
                       <property name="padx">2</property>

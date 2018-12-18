@@ -19,7 +19,7 @@ class NPC(dict):
                 "qualities": []
             },
             "Giant" : {
-                "size" : "L()",
+                "size" : "L(2x2)",
                 "reach" : 2,
                 "speed" : 50,
                 "qualities": []
@@ -30,7 +30,7 @@ class NPC(dict):
                 "qualities": []
             },
             "Ogre" : {
-                "size" : "L()",
+                "size" : "L(2x2)",
                 "qualities" : []
             },
             "Orc" : {
@@ -42,7 +42,7 @@ class NPC(dict):
             },
             "Rootwalker" : {
                 "type" : "Plant",
-                "size" : "L()",
+                "size" : "L(2x2)",
                 "qualities" : []
             },
             "Saurian" : {
@@ -58,7 +58,7 @@ class NPC(dict):
         self['gender'] = data['gender'] if 'gender' in data else "N"
         self['species'] = data['species'] if 'species' in data else "Other"
         self['text'] = data['text'] if 'text' in data else ""
-        self['size'] = data['size'] if 'size' in data else "M (5 x 5)"
+        self['size'] = data['size'] if 'size' in data else "M(1x1)"
         self['speed'] = data['speed'] if 'speed' in data else 30
         self['experience'] = data['experience'] if 'experience' in data else 0
         self['type'] = data['type'] if 'type' in data else 'Folk'

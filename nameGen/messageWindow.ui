@@ -27,6 +27,7 @@
         </child>
         <child>
           <object class="ttk.Entry" id="entryBox">
+            <bind add="" handler="yesClick" sequence="&lt;Return&gt;" />
             <layout>
               <property name="column">0</property>
               <property name="propagate">True</property>
